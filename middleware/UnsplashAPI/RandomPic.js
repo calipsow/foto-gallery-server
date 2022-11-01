@@ -7,14 +7,18 @@ module.exports = class RandomPicture {
         this.res = props.res;
         this.apiDomain = process.env.UNSPLAH_API_DOMAIN
         this.accessKey = process.env.UNSPLASH_ACCESS_KEY
-        this.apiUrl = `${this.apiDomain}/photos/?client_id=${this.accessKey}`;
+        this.apiUrl = `${this.apiDomain}/photos/?client_id=${this.accessKey}&page=${this.generateRandomInt(30).toString()}&per_page=70&order_by=popular`;
     }
-
+    generateRandomInt = (max=30) => {
+        let int = Math.floor(Math.random() * max);
+        if( int === 0 ) int = 1;
+        return int;
+    }
     getRandomPicture = async () => {
         var cache = await getCachedPhotos()
 
         if( new Date().getTime() - cache.timestamp < 144000 ){
-            console.log('send data from cache')
+            console.log('send data from cache next request in ' +  cache.timestamp - new Date().getTime() );
             this.res.json({ response: cache.data })
             return;
 
