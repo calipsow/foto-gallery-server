@@ -60,7 +60,24 @@ module.exports = class UserLookup {
             this.res.json({ response: data })
         }
     }
+    LookupUserCollection = async () => {
+        const filePath = '../../cached_files/UserlookupCache/UserLookupCollections.json'
+        var cachedRequest = await getCachedRequest(filePath)
+        let timeDiff = new Date().getTime() - cachedRequest.timestamp
 
+        if( timeDiff < 144000 ){
+            this.res.json({response: cachedRequest.data, message: 'next request in ' + ( ( 144000 - timeDiff )  / 1000 ) + ' seconds' })
+            return;
+        }else{
+            this.apiUrl = `${process.env.UNSPLAH_API_DOMAIN}/users/${this.userName}/collections?client_id=${process.env.UNSPLASH_ACCESS_KEY}` 
+            var data = await axios.get(this.apiUrl)
+            data = data.data;
+            console.log(data)
+            await SaveData( data, filePath )
+            this.res.json({ response: data })
+            return;
+        }
+    }
 
 }
 
@@ -81,7 +98,8 @@ const getCachedRequest = async (filePath) => {
 const SaveData = async (data, filePath) => {
     new Promise((resolve, reject) => {
         try{
-            fs.writeFile(path.join(__dirname, filePath), JSON.stringify({ timestamp: new Date().getTime(), data: data }), () => resolve() ) 
+            console.log(data)
+            resolve(fs.writeFileSync(path.join(__dirname, filePath), JSON.stringify({ timestamp: new Date().getTime(), data: data }) )) 
 
         }catch(err){
 

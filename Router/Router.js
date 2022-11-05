@@ -21,6 +21,10 @@ Router.get('/api/user-lookup/photos', async (req, res, next) => {
 Router.get('/api/user-lookup/statics', async (req, res, next) => {    
     await new UserLookup({res: res, userName: req.query.userName}).LookupUserStatics()    
 })
+Router.get('/api/user-lookup/collections', async (req, res, next) => { 
+    await new UserLookup({res: res, userName: req.query.userName}).LookupUserCollection()
+})
+
 Router.get('/api/photo-lookup/statics', async (req, res, next) => {    
     await new PhotoMetaData({res: res, photoID: req.query.photoID}).PhotoMetaData()    
 })
