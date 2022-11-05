@@ -3,8 +3,7 @@ const RandomPicture = require('../middleware/UnsplashAPI/RandomPic');
 const UserLookup = require('../middleware/UnsplashAPI/UserLookup');
 const PhotoMetaData = require('../middleware/UnsplashAPI/PhotoMetaData');
 const SearchPhotos = require('../middleware/UnsplashAPI/SearchPhotos');
-const fs = require('fs');
-const path = require('path');
+
 
 Router.get('/', (req, res, next) => {
     res.sendStatus(200)
