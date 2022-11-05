@@ -78,7 +78,24 @@ module.exports = class UserLookup {
             return;
         }
     }
+    LookupUserLikedPhotos = async () => {
+        const filePath = '../../cached_files/UserlookupCache/UserLookupLikedPhotos.json'
+        var cachedRequest = await getCachedRequest(filePath)
+        let timeDiff = new Date().getTime() - cachedRequest.timestamp
 
+        if( timeDiff < 144000 ){
+            this.res.json({response: cachedRequest.data, message: 'next request in ' + ( ( 144000 - timeDiff )  / 1000 ) + ' seconds' })
+            return;
+        }else{
+            this.apiUrl = `${process.env.UNSPLAH_API_DOMAIN}/users/${this.userName}/likes?client_id=${process.env.UNSPLASH_ACCESS_KEY}` 
+            var data = await axios.get(this.apiUrl)
+            data = data.data;
+            // console.log(data)
+            await SaveData( data, filePath )
+            this.res.json({ response: data })
+            return;
+        }
+    }
 }
 
 const getCachedRequest = async (filePath) => {
