@@ -8,7 +8,7 @@ module.exports = class SearchPhotos{
         this.res = props.res
         this.query = props.query
         this.pageCount = props.pageCount || '2'
-        this.per_page = props.per_page || '20'
+        this.per_page = props.per_page || '30'
         this.color = props.color || null
         this.orientation = props.orientation || null
         if( typeof this.orientation === 'string' ){
@@ -30,7 +30,9 @@ module.exports = class SearchPhotos{
 
         }else{
 
-            let data = await axios.get(apiUrl); data = data.data;
+            let data = await axios.get(apiUrl).catch(err => console.log(err.message) ); 
+            console.log(data)
+            data = data.data;
             await SaveData(data, cachePath)
             this.res.json({response: data}) 
     

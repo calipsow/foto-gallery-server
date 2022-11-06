@@ -9,7 +9,7 @@ Router.get('/', (req, res, next) => {
     res.sendStatus(200)
 })
 Router.get('/api/pictures-random', async (req, res, next) => {
-    await new RandomPicture({res: res}).getRandomPicture()    
+    await new RandomPicture({res: res, pageCount: req.query.pageCount || undefined}).getRandomPicture()    
 })
 Router.get('/api/user-lookup', async (req, res, next) => {    
     await new UserLookup({res: res, userName: req.query.userName}).LookupUser()    
@@ -31,7 +31,7 @@ Router.get('/api/photo-lookup/statics', async (req, res, next) => {
     await new PhotoMetaData({res: res, photoID: req.query.photoID}).PhotoMetaData()    
 })
 Router.get('/api/search/photos', async (req, res, next) => { 
-    await new SearchPhotos({res: res, query: req.query.query}).SearchPhotos()
+    await new SearchPhotos({res: res, query: req.query.query, pageCount: req.query.pageCount}).SearchPhotos()
 })
 
 module.exports = Router

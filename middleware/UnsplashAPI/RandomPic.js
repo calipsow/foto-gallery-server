@@ -7,7 +7,8 @@ module.exports = class RandomPicture {
         this.res = props.res;
         this.apiDomain = process.env.UNSPLAH_API_DOMAIN
         this.accessKey = process.env.UNSPLASH_ACCESS_KEY
-        this.apiUrl = `${this.apiDomain}/photos/?client_id=${this.accessKey}&page=${this.generateRandomInt(30).toString()}&per_page=70&order_by=popular`;
+        this.page = props.pageCount || this.generateRandomInt(30).toString()
+        this.apiUrl = `${this.apiDomain}/photos/?client_id=${this.accessKey}&page=${this.page}&per_page=70&order_by=popular`;
     }
     generateRandomInt = (max=30) => {
         let int = Math.floor(Math.random() * max);
