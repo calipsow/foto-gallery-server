@@ -11,6 +11,7 @@ module.exports = class SearchPhotos{
         this.per_page = props.per_page || '30'
         this.color = props.color || null
         this.orientation = props.orientation || null
+        this.photoID = props.photoID 
         if( typeof this.orientation === 'string' ){
             if(!['landscape','portrait','squarish'].includes(this.orientation.toLowerCase())) this.orientation = null;
         }
@@ -21,6 +22,29 @@ module.exports = class SearchPhotos{
         console.log(apiUrl)
 
         const cachePath = '../../cached_files/PhotolookupCache/SearchPhotos.json'
+        let cached = getCachedRequest(cachePath)
+        let timeDiff = new Date().getTime() - cached.timestamp
+
+        if( timeDiff < 144000 ){
+            this.res.json({response: cached.data, message: 'next request in ' + ( ( 144000 - timeDiff )  / 1000 ) + ' seconds'})
+            return;
+
+        }else{
+
+            let data = await axios.get(apiUrl).catch(err => console.log(err.message) ); 
+            console.log(data)
+            data = data.data;
+            await SaveData(data, cachePath)
+            this.res.json({response: data}) 
+    
+        }
+    }
+
+    SearchPhotoID = async () => {
+        let apiUrl = `${process.env.UNSPLAH_API_DOMAIN}/photos/${this.photoID}?client_id=${process.env.UNSPLASH_ACCESS_KEY}`
+
+
+        const cachePath = '../../cached_files/PhotolookupCache/SearchPhotoID.json'
         let cached = getCachedRequest(cachePath)
         let timeDiff = new Date().getTime() - cached.timestamp
 

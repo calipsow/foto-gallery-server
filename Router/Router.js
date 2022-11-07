@@ -33,5 +33,8 @@ Router.get('/api/photo-lookup/statics', async (req, res, next) => {
 Router.get('/api/search/photos', async (req, res, next) => { 
     await new SearchPhotos({res: res, query: req.query.query, pageCount: req.query.pageCount}).SearchPhotos()
 })
+Router.get('/api/search/photo-id', async (req, res, next) => { 
+    await new SearchPhotos({res: res, query: req.query.query, photoID: req.query.photoID}).SearchPhotoID()
+})
 
 module.exports = Router
