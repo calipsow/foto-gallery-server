@@ -25,7 +25,12 @@ module.exports = class RandomPicture {
 
         }else{
 
-            let response = await axios.get(this.apiUrl,{headers:{'Accept-Version':'v1'}})
+            let response = await axios.get(this.apiUrl,{headers:{'Accept-Version':'v1'}}).catch(err=>{
+                this.res.json({ response: cache.data })
+                return false;
+            })
+            if(typeof data == 'boolean') return;
+
             response = response.data;
     
             await SaveData( response )

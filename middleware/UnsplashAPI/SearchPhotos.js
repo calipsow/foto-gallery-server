@@ -31,8 +31,12 @@ module.exports = class SearchPhotos{
 
         }else{
 
-            let data = await axios.get(apiUrl).catch(err => console.log(err.message) ); 
-            console.log(data)
+            let data = await axios.get(apiUrl).catch(err=>{
+                this.res.json({ response: cached.data })
+                return false;
+            })
+            if(typeof data == 'boolean') return;
+
             data = data.data;
             await SaveData(data, cachePath)
             this.res.json({response: data}) 
@@ -52,10 +56,15 @@ module.exports = class SearchPhotos{
             this.res.json({response: cached.data, message: 'next request in ' + ( ( 144000 - timeDiff )  / 1000 ) + ' seconds'})
             return;
 
-        }else{
+        } else {
 
-            let data = await axios.get(apiUrl).catch(err => console.log(err.message) ); 
-            console.log(data)
+            let data = await axios.get(apiUrl).catch(err=>{
+                console.log(cached.data)
+                this.res.json({ response: cached.data })
+                return false;
+            })
+            if( typeof data == 'boolean' ) return;
+
             data = data.data;
             await SaveData(data, cachePath)
             this.res.json({response: data}) 

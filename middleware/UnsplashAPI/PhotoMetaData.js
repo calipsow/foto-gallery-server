@@ -19,7 +19,12 @@ module.exports = class PhotoMetaData {
             this.res.json({response: cachedRequest.data ,message: 'next request in ' + ( ( 144000 - timeDiff )  / 1000 ) + ' seconds' })
         }else{
             let apiUrl = `${process.env.UNSPLAH_API_DOMAIN}/photos/${this.photoID}/statistics?client_id=${process.env.UNSPLASH_ACCESS_KEY}` 
-            var data = await axios.get(apiUrl)
+            var data = await axios.get(apiUrl).catch(err=>{
+                this.res.json({ response: cachedRequest.data })
+                return false;
+            })
+            if(typeof data == 'boolean') return;
+
             data = data.data;
             await SaveData( data, cachePath )
             this.res.json({ response: data })
