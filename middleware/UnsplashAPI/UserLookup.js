@@ -10,7 +10,8 @@ module.exports = class UserLookup {
         this.res = props.res
         this.userName = props.userName || props.token || ''
         this.token = props.token || ''
-        this.newData = props.data
+        this.newData = props.data || null
+        this.photo_id = props.photo_id || ''
         this.apiUrl = `${process.env.UNSPLAH_API_DOMAIN}/users/${this.userName}?client_id=${process.env.UNSPLASH_ACCESS_KEY}` 
         if(!this.userName) throw new Error('User Name must be provided')
 
@@ -190,7 +191,55 @@ module.exports = class UserLookup {
 
         this.res.json({response: result})
     }
+
+    LikePhoto = async (like) => {
+        this.apiUrl = `${process.env.UNSPLAH_API_DOMAIN}/photos/${this.photo_id}/like?client_id=${process.env.UNSPLASH_ACCESS_KEY}`
+
+
+        if(like){
+            let r = await axios.request(this.apiUrl,{
+                method:'POST',
+                headers: {
+                    'Authorization': 'Bearer '+this.token
+                }
+            })
+            .then( response => response.data )
+            .catch( error => {console.log(error); return false })
+    
+            if( typeof r === 'boolean' ){
+                this.res.json({response: false, status: 500})
+                return
+
+            } else {
+                this.res.json({response: r, status: 200})
+                return
+            }
+
+        }else{
+
+            let r = await axios.request(this.apiUrl,{
+                method:'DELETE',
+                headers: {
+                    'Authorization': 'Bearer '+this.token
+                }
+            })
+            .then( response => response.data )
+            .catch( error => {console.log(error); return false })
+    
+            if( typeof r === 'boolean' ){
+                this.res.json({response: false, status: 500})
+                return
+
+            } else {
+                this.res.json({response: r, status: 200})
+                return
+            }
+
+        }
+
+    }
 }
+
 
 const getCachedRequest = async (filePath) => {
     return new Promise((resolve, reject) => {

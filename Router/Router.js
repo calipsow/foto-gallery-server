@@ -51,12 +51,25 @@ Router.get('/api/user/authenticated/profile',async (req, res, next)=>{
 })
 
 Router.get('/api/user/authenticated/profile/update',async (req, res, next)=>{
-    console.log('received request authenticated user')
+    console.log('received request authenticated update profile')
     let data = {}
     data.username = req.query.username; data.firstName = req.query.firstName; data.lastName = req.query.lastName; 
     data.email = req.query.email; data.url = req.query.url; data.instagram_username = req.query.instagram_username;
     data.bio = req.query.bio; data.location = req.query.location; 
     await new UserLookup({res: res, token: req.query.token, data: data}).UpdateUserInformation()
 })
+
+Router.get('/api/user/authenticated/photo/like',async (req, res, next)=>{
+    console.log('received request authenticated user do like')
+
+    await new UserLookup({res: res, token: req.query.token, photo_id: req.query.photo_id}).LikePhoto(true)
+})
+
+Router.get('/api/user/authenticated/photo/unlike',async (req, res, next)=>{
+    console.log('received request authenticated user do like')
+
+    await new UserLookup({res: res, token: req.query.token, photo_id: req.query.photo_id}).LikePhoto(false)
+})
+
 
 module.exports = Router
