@@ -22,7 +22,7 @@ module.exports = class SearchPhotos{
         console.log(apiUrl)
 
         const cachePath = '../../cached_files/PhotolookupCache/SearchPhotos.json'
-        let cached = getCachedRequest(cachePath)
+        let cached = await getCachedRequest(cachePath)
         let timeDiff = new Date().getTime() - cached.timestamp
 
         if( timeDiff < 144000 ){
@@ -49,7 +49,7 @@ module.exports = class SearchPhotos{
 
 
         const cachePath = '../../cached_files/PhotolookupCache/SearchPhotoID.json'
-        let cached = getCachedRequest(cachePath)
+        let cached = await getCachedRequest(cachePath)
         let timeDiff = new Date().getTime() - cached.timestamp
 
         if( timeDiff < 144000 ){
@@ -61,7 +61,7 @@ module.exports = class SearchPhotos{
             let data = await axios.get(apiUrl).catch(err=>{
                 console.log(cached.data)
                 this.res.json({ response: cached.data })
-                return false;
+                return cached;
             })
             if( typeof data == 'boolean' ) return;
 

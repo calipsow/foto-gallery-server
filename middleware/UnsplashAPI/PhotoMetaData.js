@@ -19,9 +19,10 @@ module.exports = class PhotoMetaData {
             this.res.json({response: cachedRequest.data ,message: 'next request in ' + ( ( 144000 - timeDiff )  / 1000 ) + ' seconds' })
         }else{
             let apiUrl = `${process.env.UNSPLAH_API_DOMAIN}/photos/${this.photoID}/statistics?client_id=${process.env.UNSPLASH_ACCESS_KEY}` 
-            var data = await axios.get(apiUrl).catch(err=>{
+            var data = await axios.get(apiUrl)
+            .catch(err=>{
                 this.res.json({ response: cachedRequest.data })
-                return false;
+                return cachedRequest;
             })
             if(typeof data == 'boolean') return;
 
@@ -41,8 +42,9 @@ const getCachedRequest = async (filePath) => {
             return resolve(data);
         
         }catch(err){
-            console.error(err)
-            return reject(err);
+            fs.writeFile(path.join(__dirname, filePath), JSON.stringify({timestamp: 0, data: []}))
+            console.log(err)
+            return getCachedRequest(filePath)
         }
     })
 }
