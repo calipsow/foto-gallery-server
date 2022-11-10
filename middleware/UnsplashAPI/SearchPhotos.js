@@ -23,25 +23,21 @@ module.exports = class SearchPhotos{
 
         const cachePath = '../../cached_files/PhotolookupCache/SearchPhotos.json'
         let cached = await getCachedRequest(cachePath)
+        
         let timeDiff = new Date().getTime() - cached.timestamp
 
-        if( timeDiff < 144000 ){
-            this.res.json({response: cached.data, message: 'next request in ' + ( ( 144000 - timeDiff )  / 1000 ) + ' seconds'})
-            return;
 
-        }else{
+        let data = await axios.get(apiUrl).catch(err=>{
+            this.res.json({ response: cached.data })
+            return false;
+        })
+        if(typeof data == 'boolean') return;
 
-            let data = await axios.get(apiUrl).catch(err=>{
-                this.res.json({ response: cached.data })
-                return false;
-            })
-            if(typeof data == 'boolean') return;
-
-            data = data.data;
-            await SaveData(data, cachePath)
-            this.res.json({response: data}) 
+        data = data.data;
+        await SaveData(data, cachePath)
+        this.res.json({response: data}) 
     
-        }
+        
     }
 
     SearchPhotoID = async () => {
@@ -68,7 +64,7 @@ module.exports = class SearchPhotos{
             data = data.data;
             await SaveData(data, cachePath)
             this.res.json({response: data}) 
-    
+            return
         }
     }
 }
@@ -76,13 +72,12 @@ module.exports = class SearchPhotos{
 const getCachedRequest = async (filePath) => {
     return new Promise((resolve, reject) => {
         try{
-            var data = fs.readFileSync(path.join(__dirname, filePath))
-            data = JSON.parse(data)
-            return resolve(data);
+            var data = fs.readFileSync(path.join(__dirname, filePath))            
+            return resolve(JSON.parse(data));
         
         }catch(err){
             console.error(err)
-            return reject(err);
+            return reject(err); 
         }
     })
 }
