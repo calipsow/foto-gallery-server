@@ -4,10 +4,11 @@
   "description": "backend side for picture app. build with nodejs",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js"
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "calypso -dennis wilke-",
-  "license": "ISC",
+  "author": "calipsow",
+  "license": "MIT",
   "dependencies": {
     "axios": "^0.27.2",
     "body-parser": "^1.20.1",
